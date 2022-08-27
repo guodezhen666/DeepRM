@@ -306,7 +306,7 @@ class Env:
 
         ob = self.observe()
 
-        info = self.job_record
+        info = self.job_record.record
 
         if done:
             self.seq_idx = 0

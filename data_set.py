@@ -35,13 +35,13 @@ class DataSet():
             
         observation = torch.from_numpy(observation)
         rewards = torch.from_numpy(rewards)
-        return observation,rewards
+        return observation,rewards,action
     
     
     def get_shortest_job_first_data(self,pa):
         env = environment.Env(pa,render=False, repre='image')
         action = np.zeros(pa.simu_len*pa.num_ex,dtype=np.int8)
-        observation = np.zeros((pa.simu_len*pa.num_ex,pa.network_input_height*pa.network_input_width),dtype=np.float32)
+        observation = np.zeros((pa.simu_len*pa.num_ex,1,pa.network_input_height,pa.network_input_width),dtype=np.float32)
         rewards = np.zeros((pa.simu_len*pa.num_ex,1),dtype=np.float32)
         for j in range(pa.num_ex):
             env.reset()
@@ -56,7 +56,7 @@ class DataSet():
             env.reset()
             for i in range(pa.simu_len):
                 ob, reward, done, info = env.step(action[i*j])
-                observation[i*j,:] = ob.reshape(-1)
+                observation[i*j,0,:,:] = ob
                 rewards[i*j,:] = reward
         
         # accumulative reward
@@ -67,7 +67,8 @@ class DataSet():
             
         observation = torch.from_numpy(observation)
         rewards = torch.from_numpy(rewards)
-        return observation,rewards
+        action = torch.tensor(action)
+        return observation,rewards,action
 
           
 def get_sjf_action(machine, job_slot):
@@ -99,5 +100,6 @@ if __name__ == '__main__':
     net = Net(n_layer = 4, n_hidden = 10, input_height=input_height, input_width=input_width, output_length=output_length)
     train = Train(net = net, data_set = data_set, BATCH_SIZE = pa.batch_size, pa = pa)
     train.train(epoch = pa.num_epochs, lr = pa.lr_rate)
+    # train.train_imtation_policy(epoch = pa.num_epochs, lr = pa.lr_rate)
     train.save_model()
     

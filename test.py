@@ -5,10 +5,10 @@ Created on Thu Aug 18 17:12:17 2022
 @author: ZHEN DEGUO
 """
 
-from environment_gym import Env
+from environment import Env
 import parameters
-from stable_baselines3.common.env_checker import check_env
-from stable_baselines3 import DQN
+# from stable_baselines3.common.env_checker import check_env
+# from stable_baselines3 import DQN
 import numpy as np
 from data_set import get_sjf_action
 import torch
@@ -57,7 +57,7 @@ def compare_policy_delay():
     env.reset()
     for i in range(pa.episode_max_length):
         action = get_sjf_action(env.machine, env.job_slot)
-        b, reward, done, info_SJF = env.step(action)
+        ob, reward, done, info_SJF = env.step(action)
         
         
     # reinforcement learning model
@@ -67,8 +67,14 @@ def compare_policy_delay():
     action = 0
     for i in range(pa.episode_max_length):
         ob, reward, done, info_RL = env.step(action)
-        ob = torch.from_numpy(ob.reshape(-1))
-        action = model(torch.atleast_2d(ob))[0].argmax().item()
+        state = np.zeros((1,1,20,124))
+        state[0,0,:,:] = ob
+        state = torch.tensor(state,dtype=torch.float32)
+        action = model(state)[0].argmax().item()
+        # print(action)
+    
+    # print(info_SJF)
+    # print(info_RL)
     
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -79,7 +85,7 @@ def compare_policy_delay():
     slow_down_cdf_RL ,slow_down_yvals_RL = get_slow_down_cdf(info_RL)
     ax.plot(slow_down_cdf_RL, slow_down_yvals_RL, linewidth=2,label="RL")
     ax.legend()
-    # ax.show()
+    plt.show()
 
 if __name__ == "__main__":
     compare_policy_delay()

@@ -9,9 +9,9 @@ class Parameters:
 
         self.output_filename = r'./data'
 
-        self.num_epochs = 500        # number of training epochs
+        self.num_epochs = 100        # number of training epochs
         self.simu_len = 100             # length of the busy cycle that repeats itself
-        self.num_ex = 2000                # number of sequences
+        self.num_ex = 200               # number of sequences
 
         self.output_freq = 10          # interval for output and store parameters
 
@@ -67,7 +67,7 @@ class Parameters:
         self.unseen = False  # change random seed to generate unseen example
 
         # supervised learning mimic policy
-        self.batch_size = 10
+        self.batch_size = 64
         self.evaluate_policy_name = "SJF"
 
     def compute_dependent_parameters(self):
