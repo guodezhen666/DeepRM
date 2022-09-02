@@ -9,7 +9,7 @@ class Parameters:
 
         self.output_filename = r'./data'
 
-        self.num_epochs = 100        # number of training epochs
+        self.num_epochs = 500        # number of training epochs
         self.simu_len = 100             # length of the busy cycle that repeats itself
         self.num_ex = 200               # number of sequences
 

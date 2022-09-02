@@ -19,7 +19,9 @@ class Train():
         self.state, self.reward,self.action = self.data_set.get_shortest_job_first_data(pa)
         
     def train(self, epoch, lr):
-        optimizer = optim.Adam(self.net.parameters(), lr)
+        optimizer = optim.Adam(self.net.parameters(), lr=lr, weight_decay=0.001)
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.8)
+        # optimizer = optim.Adam(self.net.parameters(), lr)
         avg_loss = 0
         for e in range(epoch):
             optimizer.zero_grad()
@@ -29,9 +31,12 @@ class Train():
             optimizer.step()
             # if e % 100 == 99:
             loss = avg_loss/50
-            print("Epoch {} - lr {} -  loss: {}".format(e, lr, loss))
+            print("Epoch {} - lr {} -  loss: {}".format(e, optimizer.state_dict()['param_groups'][0]['lr'], loss))
             avg_loss = 0
-
+            
+            if e%20 == 0:
+                scheduler.step()
+            
             error = self.loss_func(parameters.Parameters().batch_size)
             self.errors.append(error.detach())
 

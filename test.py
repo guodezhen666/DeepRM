@@ -15,13 +15,13 @@ import torch
 import matplotlib.pyplot as plt
 
 
-def test_stable_baselines3():
-    pa = parameters.Parameters()
-    env = Env(pa, render=False, repre='image')
-    check_env(env)
-    model = DQN('MlpPolicy', env, verbose=1)
-    model.learn(total_timesteps=int(2000))
-    model.save("dqn_test")
+# def test_stable_baselines3():
+#     pa = parameters.Parameters()
+#     env = Env(pa, render=False, repre='image')
+#     check_env(env)
+#     model = DQN('MlpPolicy', env, verbose=1)
+#     model.learn(total_timesteps=int(2000))
+#     model.save("dqn_test")
 
 
 
@@ -71,7 +71,7 @@ def compare_policy_delay():
         state[0,0,:,:] = ob
         state = torch.tensor(state,dtype=torch.float32)
         action = model(state)[0].argmax().item()
-        # print(action)
+        print(action)
     
     # print(info_SJF)
     # print(info_RL)

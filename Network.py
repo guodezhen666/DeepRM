@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-import parameters
+# import parameters
 
 class Net(nn.Module):
     # n_layer: the number of hidden layers
@@ -30,18 +30,16 @@ class Net(nn.Module):
     def __init__(self, n_layer, n_hidden, input_height, input_width, output_length):
         super().__init__()
         # input channels output channels kernels_size
-        self.conv1 = nn.Conv2d(1, 6, 2)
+        self.conv1 = nn.Conv2d(1, 16, 4)
         self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 2 * 28, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, output_length)
+        self.conv2 = nn.Conv2d(16, 32, 5)
+        self.fc1 = nn.Linear(32* 2 * 28, 64)
+        self.fc2 = nn.Linear(64, output_length)
     
     def forward(self, x):
         x = self.pool(torch.relu(self.conv1(x)))
         x = self.pool(torch.relu(self.conv2(x)))
         x = torch.flatten(x, 1) # flatten all dimensions except batch
         x = torch.relu(self.fc1(x))
-        x = torch.relu(self.fc2(x))
-        x = torch.softmax(self.fc3(x),1)
+        x = torch.softmax(self.fc2(x),1)
         return x
